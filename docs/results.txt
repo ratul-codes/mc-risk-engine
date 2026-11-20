@@ -7,6 +7,9 @@ Historical                       2.88%   4.28%
 Parametric (Normal)              2.33%   2.67%
 Monte Carlo (Normal)             2.31%   2.64%
 Monte Carlo (Student-t, df=5)    2.61%   3.42%
+EWMA (Normal)                    1.14%   1.30%
+EWMA (Student-t)                 1.27%   1.69%
+(EWMA rows use mostly the most recent ~16 days, so they describe risk 'now')
 
 === 2. Component VaR (share of parametric VaR by asset) ===
 ASSET_1          16.0%
@@ -24,6 +27,8 @@ Historical                      2250    31   22.5     0.088      0.074  PASS
 Parametric (Normal)             2250    43   22.5     0.000      0.260  FAIL
 Monte Carlo (Normal)            2250    44   22.5     0.000      0.283  FAIL
 Monte Carlo (Student-t, df=5)   2250    24   22.5     0.753      0.025  FAIL
+EWMA (Normal)                   2250    45   22.5     0.000      0.002  FAIL
+EWMA (Student-t)                2250    25   22.5     0.603      0.000  FAIL
 (PASS = both p-values >= 0.05; Kupiec tests the exception count, Christoffersen tests clustering)
 
 === 4. Monte Carlo convergence (std. error of VaR over 100 seeds) ===

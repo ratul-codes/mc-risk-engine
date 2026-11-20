@@ -10,6 +10,7 @@ import numpy as np
 from . import plots
 from .backtest import rolling_backtest
 from .data import load_prices_csv, synthetic_returns
+from .ewma import ewma_monte_carlo_var, ewma_parametric_var
 from .models import component_var, historical_var, monte_carlo_var, parametric_var
 
 
@@ -19,6 +20,8 @@ def build_estimators(n_sims: int, seed: int):
         "Parametric (Normal)": parametric_var,
         "Monte Carlo (Normal)": partial(monte_carlo_var, n_sims=n_sims, dist="normal", seed=seed),
         "Monte Carlo (Student-t)": partial(monte_carlo_var, n_sims=n_sims, dist="t", df=5, seed=seed),
+        "EWMA (Normal)": ewma_parametric_var,
+        "EWMA (Student-t)": partial(ewma_monte_carlo_var, n_sims=n_sims, dist="t", df=5, seed=seed),
     }
 
 
@@ -60,7 +63,8 @@ def main() -> None:
         e = est(returns, w, args.alpha)
         full.append(e)
         emit(f"{e.method:<30}{e.var:>8.2%}{e.cvar:>8.2%}")
-    plots.plot_loss_distribution(-(returns @ w), full, out / "loss_distribution.png")
+    emit("(EWMA rows use mostly the most recent ~16 days, so they describe risk 'now')")
+    plots.plot_loss_distribution(-(returns @ w), full[:4], out / "loss_distribution.png")
 
     # 2. Component VaR
     emit("\n=== 2. Component VaR (share of parametric VaR by asset) ===")
@@ -78,7 +82,7 @@ def main() -> None:
         emit(f"{res.method:<30}{res.n_obs:>6}{res.n_exceptions:>6}{res.expected_exceptions:>7.1f}"
              f"{res.kupiec_p:>10.3f}{res.christoffersen_p:>11.3f}  {res.verdict()}")
     emit("(PASS = both p-values >= 0.05; Kupiec tests the exception count, Christoffersen tests clustering)")
-    plots.plot_backtests([results[1], results[3]], out / "backtest.png")
+    plots.plot_backtests([results[1], results[3], results[5]], out / "backtest.png")
 
     # 4. Convergence
     emit("\n=== 4. Monte Carlo convergence (std. error of VaR over 100 seeds) ===")

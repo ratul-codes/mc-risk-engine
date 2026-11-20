@@ -1,0 +1,8 @@
+45 synthetic datasets, 2250 forecasts each, 22.5 exceptions expected at 99%, 5% significance
+Method                   Avg exc.  Kupiec pass  Christ. pass  Both pass
+Historical                   34.8          27%           84%        24%
+Parametric (Normal)          40.6           9%           78%         4%
+MC Student-t                 33.0          44%           80%        42%
+EWMA Normal (0.94)           36.6          16%           98%        16%
+EWMA Student-t (0.94)        29.3          82%           96%        78%
+EWMA Student-t (0.97)        26.6          89%           91%        82%
